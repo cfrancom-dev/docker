@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mi-node-secretcm
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mi-node-secretcm
+  template:
+    metadata:
+      labels:
+        app: mi-node-secretcm
+    spec:
+      containers:
+      - name: mi-node-secretcm
+        image: cfrancom/secretcm:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: my-secret
+              key: password
+        - name: API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: my-config
+              key: apiUrl
+        - name: API_TOKEN
+          valueFrom:
+            configMapKeyRef:
+              name: my-config
+              key: apiToken

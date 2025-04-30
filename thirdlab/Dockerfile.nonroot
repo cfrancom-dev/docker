@@ -1,0 +1,21 @@
+FROM node:18-alpine
+
+# Instala curl y crea un usuario no root
+RUN apk add --no-cache curl && adduser -D nonrootuser
+
+WORKDIR /usr/src/app
+COPY package*.json ./
+
+# Instala dependencias como root
+RUN npm install && npm cache clean --force
+
+COPY . .
+
+# Cambia al usuario no root después de instalar dependencias
+USER nonrootuser
+
+ENV PORT=3000
+EXPOSE $PORT
+CMD ["node", "index.js"]
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl -f http://localhost:$PORT || exit 1

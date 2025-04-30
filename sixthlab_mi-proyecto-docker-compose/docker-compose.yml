@@ -1,0 +1,31 @@
+ version: '3.8'
+ services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    image: mi-web:latest
+    container_name: mi-contenedor-web
+    ports:
+      - "5000:3000"
+    volumes:
+      - type: bind
+        source: ./data
+        target: /app/data
+    networks:
+      mynet:
+  db:
+    image: postgres
+    container_name: mi-contenedor-db
+    environment:
+      POSTGRES_DB: exampledb
+      POSTGRES_USER: exampleuser
+      POSTGRES_PASSWORD: examplepass
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      mynet:
+ networks:
+  mynet:
+ volumes:
+  db-data:

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mi-statefulset
+  labels:
+    app: mi-aplicacion
+spec:
+  serviceName: mi-servicio
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mi-aplicacion
+  template:
+    metadata:
+      labels:
+        app: mi-aplicacion
+    spec:
+      containers:
+      - name: mi-contenedor
+        image: mi-imagen:latest
+        ports:
+        - containerPort: 3000

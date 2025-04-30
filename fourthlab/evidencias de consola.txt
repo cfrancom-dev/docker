@@ -1,0 +1,74 @@
+PS C:\Users\Netec> git init
+Reinitialized existing Git repository in C:/Users/Netec/.git/
+PS C:\Users\Netec> 
+ *  History restored 
+
+PS C:\Users\Netec>  docker volume create mi-volumen
+error during connect: Post "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.48/volumes/create": open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+PS C:\Users\Netec>  docker volume create mi-volumen
+mi-volumen
+PS C:\Users\Netec> docker run -it --name mi-contenedor -v mi-volumen:/data ubuntu /bin/bash
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+2726e237d1a3: Pull complete
+Digest: sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02
+Status: Downloaded newer image for ubuntu:latest
+docker: Error response from daemon: Conflict. The container name "/mi-contenedor" is already in use by container "c18d23184392bb6de5c8f617a93b6d67b2c83caf3c53fe5cd97cf505c14a096b". You have to remove (or rename) that container to be able to reuse that name.
+
+Run 'docker run --help' for more information
+PS C:\Users\Netec> docker rm mi-contenedor                                                 
+>> 
+mi-contenedor
+PS C:\Users\Netec> docker run -it --name mi-contenedor -v mi-volumen:/data ubuntu /bin/bash
+root@23a998f2a481:/# ls
+bin  boot  data  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@23a998f2a481:/# echo "hola desde el volumen" > /data/mi_archivo.txt
+root@23a998f2a481:/# ls
+bin  boot  data  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@23a998f2a481:/# cd data
+root@23a998f2a481:/data# ls
+mi_archivo.txt
+root@23a998f2a481:/data# cd..
+bash: cd..: command not found
+root@23a998f2a481:/data# exit
+exit
+PS C:\Users\Netec>  docker start -ai mi-contenedor
+root@23a998f2a481:/# cat /data/mi_archivo.txt 
+hola desde el volumen
+root@23a998f2a481:/# exit
+exit
+PS C:\Users\Netec>  mkdir C:\mi-bind-mount
+>>
+
+
+    Directory: C:\
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----         4/28/2025   9:25 AM                mi-bind-mount
+
+
+PS C:\Users\Netec>  docker run -it --name mi-contenedor-bind -v C:\mi-bind-mount:/data ubuntu /bin/bash
+>>
+root@380f07320949:/# exit
+exit
+PS C:\Users\Netec>  docker run -it --name mi-contenedor-tmpfs --tmpfs /data ubuntu /bin/bash
+>>
+root@b65f4465b39e:/# echo "Hola desde el volumen Tmpfs" > /data/mi_archivo.txt
+root@b65f4465b39e:/# exit
+exit
+PS C:\Users\Netec>  docker start -ai mi_contenedor-tmpfs
+Error response from daemon: No such container: mi_contenedor-tmpfs
+PS C:\Users\Netec>  docker start -ai mi-contenedor-tmpfs
+root@b65f4465b39e:/# cat /data/mi_archivo
+cat: /data/mi_archivo: No such file or directory
+root@b65f4465b39e:/# ls
+bin  boot  data  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@b65f4465b39e:/# cd data
+root@b65f4465b39e:/data# echo "Hola desde el volumen Tmpfs" > /data/mi_archivo.txt
+root@b65f4465b39e:/data# ls
+mi_archivo.txt
+root@b65f4465b39e:/data# cat /data/mi_archivo.txt 
+Hola desde el volumen Tmpfs
+root@b65f4465b39e:/data#

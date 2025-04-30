@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: mi-daemonset
+  labels:
+    app: mi-aplicacion
+spec:
+  selector:
+    matchLabels:
+      app: mi-aplicacion
+  template:
+    metadata:
+      labels:
+        app: mi-aplicacion
+    spec:
+      containers:
+      - name: mi-contenedor
+        image: mi-imagen:latest
+        ports:
+        - containerPort: 3000

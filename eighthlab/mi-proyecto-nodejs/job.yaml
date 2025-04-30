@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mi-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: mi-aplicacion
+    spec:
+      containers:
+      - name: mi-contenedor
+        image: mi-imagen:latest
+        command: [ "echo", "Hola Mundo" ]
+      restartPolicy: Never
+  backoffLimit: 4

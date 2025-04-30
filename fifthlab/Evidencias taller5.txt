@@ -1,0 +1,69 @@
+
+##Taller 5
+
+PS C:\Users\Netec>  docker --version
+>> 
+Docker version 28.0.4, build b8034c0
+PS C:\Users\Netec>  docker run -d -p 8080:80 --name mi-nginx nginx
+3d37491e003f68a24851163f92805e9e5d46a5447b305d469792c77c6381e3f6
+PS C:\Users\Netec> docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS          PORTS                  NAMES
+3d37491e003f   nginx     "/docker-entrypoint.…"   7 seconds ago       Up 5 seconds    0.0.0.0:8080->80/tcp   mi-nginx
+b65f4465b39e   ubuntu    "/bin/bash"              About an hour ago   Up 57 minutes                          mi-contenedor-tmpfs
+PS C:\Users\Netec>  docker port mi-nginx
+>>  
+80/tcp -> 0.0.0.0:8080
+PS C:\Users\Netec>  docker network create --driver bridge mi-red-bridge
+>> 
+9dbbce82160b617b133b3580d2547ac0d2c02b262ff7e3ad19d30495552d62b3
+PS C:\Users\Netec>  docker run -d -p 9090:80 --name mi-nginx-bridge --network mi-red-bridge nginx
+>> 
+ad9b3745551c4e82738d28102bdaa3edf1a46acbfbf5686f38831cba89e8e48b
+PS C:\Users\Netec>  docker run -d --name otro-nginx --network mi-red-bridge nginx
+fa21602b0a7b36cd460f8796fd186b32db2008769744b6e1dbb14dde20b985ab
+PS C:\Users\Netec>  docker run -d --name mi-nginx-host --network host nginx
+fadacd1124b0eee6fdeb5a7ea4c8fb2cb738150a0141f36a03eaf1abf5e83a4d
+PS C:\Users\Netec>  docker exec -it mi-nginx-bridge /bin/bash
+root@ad9b3745551c:/# apt-get update
+Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8792 kB]
+Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [512 B]
+Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [258 kB]
+Fetched 9305 kB in 3s (3375 kB/s)
+Reading package lists... Done
+root@ad9b3745551c:/# apt-get install -y curl
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+curl is already the newest version (7.88.1-10+deb12u12).
+0 upgraded, 0 newly installed, 0 to remove and 1 not upgraded.
+root@ad9b3745551c:/#  curl http://otro-nginx
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+
+root@ad9b3745551c:/# exit
+exit
+PS C:\Users\Netec> 
